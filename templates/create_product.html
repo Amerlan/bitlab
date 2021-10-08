@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Create product</title>
+</head>
+<body>
+<h1> {{ request.user }}</h1>
+
+{#{% for product in products %}#}
+{#    <h5>{{ product.name }}</h5>#}
+{#    <h5>{{ product.price }}</h5>#}
+{#    <h5>{{ product.description }}</h5>#}
+{#    <h6>{{ product.created }}</h6>#}
+{#    <br>#}
+{#{% endfor %}#}
+
+<form id='form' action="{% url 'creation' %}" method="post">
+    {% csrf_token %}
+    Название продукта <input name="name" type="text">
+    <br>
+    Цена <input name="price" type="number">
+    <br>
+    Описание <input name="description" type="text">
+    <br>
+    <input id='sbm' type="submit">
+</form>
+<br>
+    <h5>{{ request.user }}</h5>
+    <h5>{{ product.price }}</h5>
+    <h5>{{ product.description }}</h5>
+    <h6>{{ product.created }}</h6>
+    </body>
+</html>

@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Title</title>
+</head>
+<body>
+<h1> {{ request.user }}</h1>
+<form id='form' action="{% url 'login' %}" method="post">
+    {% csrf_token %}
+    Имя пользователя <input name="username" type="text">
+    <br>
+    Пароль <input name="password" type="text">
+    <br>
+    <input id='sbm' type="submit">
+</form>
+
+<form id='form' action="{% url 'logout' %}" method="post">
+    {% csrf_token %}
+    <input id='sbm' type="submit">
+</form>
+</body>
+</html>
