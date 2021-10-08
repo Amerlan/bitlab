@@ -39,3 +39,7 @@ def create_product(request):
     description = data['description']
     Product.objects.create(name=name, price=price, description=description)
     return redirect('/product/')
+
+
+def show_users(request):
+    return render('index.html')
