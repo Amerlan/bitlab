@@ -1,4 +1,5 @@
 from django.urls import path
+
 from .views import IndexView
 # from .views import \
 #     load_page_create_product,\
@@ -12,4 +13,3 @@ shop_urlpatterns = [
     # path('create-product/', create_product, name="creation"),
     # path('login/', login_view, name='login'),
     # path('logout/', logout_view, name='logout')
-]

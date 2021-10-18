@@ -21,4 +21,3 @@ class Order(models.Model):
 #     price = models.IntegerField()
 #     description = models.TextField(null=True, default='Добавь описание')
 #     created = models.DateTimeField(auto_now=True)
-
