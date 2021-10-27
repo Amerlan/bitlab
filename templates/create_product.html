@@ -7,15 +7,15 @@
 <body>
 <h1> {{ request.user }}</h1>
 
-{% for product in products %}
-    <div>
-        <p>Название продукта: {{ product.name }}</p>
-        <p>Цена: {{ product.price }}</p>
-        <p>Описание: {{ product.description }}</p>
-        <p>Дата добавления: {{ product.created }}</p>
-    </div>
-    <br>
-{% endfor %}
+{#{% for product in products %}#}
+{#    <div>#}
+{#        <p>Название продукта: {{ product.name }}</p>#}
+{#        <p>Цена: {{ product.price }}</p>#}
+{#        <p>Описание: {{ product.description }}</p>#}
+{#        <p>Дата добавления: {{ product.created }}</p>#}
+{#    </div>#}
+{#    <br>#}
+{#{% endfor %}#}
 
 {#<form id='form' action="http://127.0.0.1:8000/" method="post">#}
 {#    {% csrf_token %}#}

@@ -2,11 +2,60 @@ from django.contrib.auth import authenticate, login, logout
 from django.shortcuts import render, redirect
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework.renderers import TemplateHTMLRenderer
-from .serializers import ProductSerializer
+from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer
 from rest_framework.views import APIView
 from rest_framework.response import Response
+from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
+from rest_framework.generics import GenericAPIView
 from rest_framework import status
-from .models import Product
+from .models import Product, Order
+
+
+class OrderView(GenericAPIView, RetrieveModelMixin):
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request, pk):
+        return super().retrieve(request, pk)
+
+
+class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request):
+        return super().list(request)
+
+    def post(self, request):
+        return super().create(request)
+
+
+class ProductDetailView(GenericAPIView, RetrieveModelMixin, UpdateModelMixin, DestroyModelMixin):
+    queryset = Product.objects.all()
+    serializer_class = ProductDetailSerializer
+    permission_classes = (AllowAny, )
+
+    def get(self, request, pk):
+        return super().retrieve(request, pk)
+
+    def delete(self, request, pk):
+        return super().destroy(request, pk)
+
+    def put(self, request, pk):
+        return super().update(request, pk)
+
+    def patch(self, request, pk):
+        return super().partial_update(request, pk)
+
+
+class ProductCreateView(GenericAPIView, CreateModelMixin):
+    serializer_class = ProductSerializer
+    permission_classes = (AllowAny, )
+
+    def post(self, request):
+        return super().create(request)
 
 
 class IndexView(APIView):
@@ -20,7 +69,7 @@ class IndexView(APIView):
         context = {
             'products': serializer.data
         }
-        return Response(status=status.HTTP_200_OK)
+        return Response(status=status.HTTP_200_OK, data=context)
 
     def post(self, request):
         data = request.data
@@ -32,6 +81,9 @@ class IndexView(APIView):
 
 
 
+
+def homepage(request):
+    return render("index.html")
 
 def login_view(request):
     if request.method == "POST":

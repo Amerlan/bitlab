@@ -1,11 +1,12 @@
 from django.db import models
-from django.db.models import Count
+from django.contrib.auth.models import User
 
 
 class Product(models.Model):
     name = models.CharField(max_length=40)
     price = models.IntegerField()
     description = models.TextField(null=True, default='Добавь описание')
+    discount = models.FloatField(default=0.5)
     created = models.DateTimeField(auto_now=True)
 
     def __str__(self):
@@ -13,11 +14,6 @@ class Product(models.Model):
 
 
 class Order(models.Model):
+    customer = models.ForeignKey(to=User, null=True, on_delete=models.CASCADE, related_name='orders')
     product = models.ManyToManyField(to=Product)
 
-
-# class Product(models.Model):
-#     name = models.CharField(max_length=40)
-#     price = models.IntegerField()
-#     description = models.TextField(null=True, default='Добавь описание')
-#     created = models.DateTimeField(auto_now=True)
