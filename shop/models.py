@@ -16,4 +16,5 @@ class Product(models.Model):
 class Order(models.Model):
     customer = models.ForeignKey(to=User, null=True, on_delete=models.CASCADE, related_name='orders')
     product = models.ManyToManyField(to=Product)
+    is_active = models.BooleanField(default=True)
 

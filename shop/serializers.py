@@ -1,35 +1,40 @@
-from rest_framework import *
-from django.contrib.auth.models import *
-from .models import *
+from rest_framework import serializers
+from rest_framework.exceptions import ValidationError
+from .models import Product
+
 
 class ProductSerializer(serializers.ModelSerializer):
-    # name = serializers.CharField()
-    # price = serializers.IntegerField()
-    # price_with_discount = serializers.SerializerMethodField()
-
-    # def get_price_with_discount(self, obj):
-    #     return obj.price * obj.discount
-
     class Meta:
         model = Product
-        fields = ('name', 'price')
+        fields = (
+            'id', 'name', 'price',
+        )
 
-
-class CustomerSerializer(serializers.ModelSerializer):
-    class Meta:
-        model = User
-        fields = ('username', 'email')
-
-
-class OrderSerializer(serializers.Serializer):
-    id = serializers.IntegerField()
-    customer = CustomerSerializer()
-
-    class Meta:
-        fields = ('customer', 'id')
+    def validate(self, attrs):
+        if attrs['price'] <= 0:
+            raise ValidationError('Некорректное значение цены')
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = '__all__'
+        fields = (
+            'id', 'name', 'price', 'description',
+        )
+
+
+class UserSerializer(serializers.Serializer):
+    username = serializers.CharField()
+
+    class Meta:
+        fields = 'username'
+
+
+class OrderSerializer(serializers.Serializer):
+    product = ProductDetailSerializer(many=True)
+    customer = UserSerializer()
+
+    class Meta:
+        fields = (
+            'id', 'product', 'customer',
+        )

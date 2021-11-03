@@ -2,19 +2,11 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Title</title>
+    <title>Homepage</title>
 </head>
 <body>
-<h1> {{ usernames }}</h1>
-<h1> {{ password }}</h1>
-
-{% for username in usernames %}
-    <h3> {{ username }}</h3>
-{% endfor %}
-<form id='form' method="post">
-    {% csrf_token %}
-    <input name="username">
-    <input id='sbm' type="submit">
-</form>
-    </body>
+<a href="http://127.0.0.1:8000/products/"> Продукты</a>
+<br>
+<a href="http://127.0.0.1:8000/order/"> Заказ</a>
+</body>
 </html>
