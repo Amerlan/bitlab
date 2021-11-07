@@ -1,7 +1,16 @@
 version: "3.7"
 
-
 services:
+  postgres:
+    container_name: 'postgresql'
+    image: postgres:13-alpine
+    networks:
+      - common
+    environment:
+      POSTGRES_DB: postgres # database name
+      POSTGRES_USER: postgres # username
+      POSTGRES_PASSWORD: postgres # password
+
   redis:
     container_name: 'redis'
     image: redis:alpine
@@ -12,18 +21,22 @@ services:
 
   django:
     container_name: 'django'
+    restart: on-failure
     build: .
     ports:
     - "8000:8000"
     command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
     networks:
       - common
+    depends_on:
+      - postgres
 
   celery:
     container_name: 'celery'
     build: .
     command: celery -A bitalb worker --loglevel=info
     depends_on:
+      - postgres
       - redis
       - django
     networks:
