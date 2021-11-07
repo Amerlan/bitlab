@@ -1,0 +1,35 @@
+version: "3.7"
+
+
+services:
+  redis:
+    container_name: 'redis'
+    image: redis:alpine
+    ports:
+      - "6379:6379"
+    networks:
+      - common
+
+  django:
+    container_name: 'django'
+    build: .
+    ports:
+    - "8000:8000"
+    command: sh -c "python manage.py migrate && python manage.py runserver 0.0.0.0:8000"
+    networks:
+      - common
+
+  celery:
+    container_name: 'celery'
+    build: .
+    command: celery -A bitalb worker --loglevel=info
+    depends_on:
+      - redis
+      - django
+    networks:
+      - common
+
+
+networks:
+  common:
+    name: common
