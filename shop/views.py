@@ -1,38 +1,43 @@
+from django.contrib.auth import logout, login
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
-from rest_framework.permissions import AllowAny
+from rest_framework.permissions import IsAuthenticated
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
 from rest_framework.views import APIView
-
+from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
-from .serializers import ProductSerializer, ProductDetailSerializer, OrderSerializer
+from .serializers import ProductSerializer, OrderSerializer
+
+
+class ProductViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated, )
+    queryset = Product.objects.all()
+    serializer_class = ProductSerializer
+
+
+class OrderViewSet(ModelViewSet):
+    permission_classes = (IsAuthenticated,)
+    queryset = Order.objects.all()
+    serializer_class = OrderSerializer
 
 
 class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
     queryset = Product.objects.all()
-    permission_classes = (AllowAny,)
+    permission_classes = (IsAuthenticated,)
     serializer_class = ProductSerializer
 
     def get(self, request):
+        print(request.user)
         return super().list(request)
 
     def post(self, request):
         return super().create(request)
 
 
-class ProductDetailView(GenericAPIView, RetrieveModelMixin):
-    queryset = Product.objects.all()
-    permission_classes = (AllowAny,)
-    serializer_class = ProductDetailSerializer
-
-    def get(self, request, pk):
-        return super().retrieve(request, pk)
-
-
 class OrderView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request):
         order = get_object_or_404(Order, customer=request.user)
@@ -41,7 +46,7 @@ class OrderView(APIView):
 
 
 class AddProductApiView(APIView):
-    permission_classes = (AllowAny, )
+    permission_classes = (IsAuthenticated, )
 
     def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
