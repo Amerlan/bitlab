@@ -1,7 +1,7 @@
 from django.contrib.auth import logout, login
 from django.shortcuts import render, get_object_or_404
 from rest_framework import status
-from rest_framework.permissions import IsAuthenticated
+from rest_framework.permissions import AllowAny
 from rest_framework.generics import GenericAPIView
 from rest_framework.mixins import ListModelMixin, RetrieveModelMixin, CreateModelMixin, DestroyModelMixin, UpdateModelMixin
 from rest_framework.response import Response
@@ -12,24 +12,23 @@ from .serializers import ProductSerializer, OrderSerializer
 
 
 class ProductViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class OrderViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
 
 class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
     queryset = Product.objects.all()
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (AllowAny,)
     serializer_class = ProductSerializer
 
     def get(self, request):
-        print(request.user)
         return super().list(request)
 
     def post(self, request):
@@ -37,7 +36,7 @@ class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
 
 
 class OrderView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
 
     def get(self, request):
         order = get_object_or_404(Order, customer=request.user)
@@ -46,7 +45,7 @@ class OrderView(APIView):
 
 
 class AddProductApiView(APIView):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (AllowAny, )
 
     def get(self, request, pk):
         product = get_object_or_404(Product, id=pk)
