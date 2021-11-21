@@ -13,6 +13,7 @@ class ProductSerializer(serializers.ModelSerializer):
     def validate(self, attrs):
         if attrs['price'] <= 0:
             raise ValidationError('Некорректное значение цены')
+        return  attrs
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):
