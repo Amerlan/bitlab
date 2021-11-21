@@ -6,13 +6,15 @@ from .models import Product
 class ProductSerializer(serializers.ModelSerializer):
     class Meta:
         model = Product
-        fields = (
+        read_only_fields = ('description', )
+        fields = read_only_fields + (
             'id', 'name', 'price',
         )
 
     def validate(self, attrs):
         if attrs['price'] <= 0:
             raise ValidationError('Некорректное значение цены')
+        return attrs
 
 
 class ProductDetailSerializer(serializers.ModelSerializer):

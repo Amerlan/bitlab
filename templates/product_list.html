@@ -15,24 +15,7 @@
 <div>
     <button id="get_data">Load data</button>
 </div>
- <script>
-     function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
-            }
-            return cookieValue;
-        }
-        const csrftoken = getCookie('csrftoken');
-
+<script>
         let get_data = document.getElementById('get_data');
         let content_block = document.getElementById('content');
 
@@ -40,14 +23,25 @@
             const url = 'http://127.0.0.1:8000/api/products/';
             let headers = {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + 'eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ0b2tlbl90eXBlIjoiYWNjZXNzIiwiZXhwIjoxNjM3MTU5NTEzLCJpYXQiOjE2MzcxNTkyMTMsImp0aSI6IjU1NThiMjk2NTcxZTQ3NmY5NDRjZTU0NTY3YTY2MzBhIiwidXNlcl9pZCI6MX0.rJZCbvGu4-uWllfIcVU2Pn-Pq6EF8KGyCLK1AuOHvWs'
             }
             let options = {
                 method: 'GET',
                 headers: headers
             };
             fetch(url, options)
-                .then(response => response.json())
+                .then(response => {
+                console.log(response.ok);
+                result = response.json();
+                if (response.ok){
+                    return result;
+                }
+                else{
+                    return alert('ERROR');
+                }
+                })
                 .then(result => {
+                    console.log(result);
                     for (let i in result){
                         let product_div = document.createElement('div');
                         product_div.id = result[i].id;
@@ -116,5 +110,5 @@
         )
         })
  </script>
-    </body>
+</body>
 </html>
