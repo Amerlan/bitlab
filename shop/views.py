@@ -9,16 +9,17 @@ from rest_framework.views import APIView
 from rest_framework.viewsets import ModelViewSet
 from .models import Product, Order
 from .serializers import ProductSerializer, OrderSerializer
+from .permissions import CustomerPermission, OrderCustomerPernission
 
 
 class ProductViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated, )
+    permission_classes = (CustomerPermission, )
     queryset = Product.objects.all()
     serializer_class = ProductSerializer
 
 
 class OrderViewSet(ModelViewSet):
-    permission_classes = (IsAuthenticated,)
+    permission_classes = (OrderCustomerPernission,)
     queryset = Order.objects.all()
     serializer_class = OrderSerializer
 
@@ -29,7 +30,6 @@ class ProductView(GenericAPIView, ListModelMixin, CreateModelMixin):
     serializer_class = ProductSerializer
 
     def get(self, request):
-        print(request.user)
         return super().list(request)
 
     def post(self, request):
