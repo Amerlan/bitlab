@@ -5,6 +5,11 @@
     <title>Список продуктов</title>
 </head>
 <body>
+<div>
+    Username <input id="username", type="text">
+    Password <input id="password", type="password">
+    <button id="login">Login</button>
+</div>
 <div id="product-create">
 Название продукта<input id="name" type="text">
 Цена <input id="price" type="number">
@@ -15,39 +20,88 @@
 <div>
     <button id="get_data">Load data</button>
 </div>
- <script>
-     function getCookie(name) {
-            let cookieValue = null;
-            if (document.cookie && document.cookie !== '') {
-                const cookies = document.cookie.split(';');
-                for (let i = 0; i < cookies.length; i++) {
-                    const cookie = cookies[i].trim();
-                    // Does this cookie string begin with the name we want?
-                    if (cookie.substring(0, name.length + 1) === (name + '=')) {
-                        cookieValue = decodeURIComponent(cookie.substring(name.length + 1));
-                        break;
-                    }
-                }
+<script>
+        let login = document.getElementById('login');
+        login.addEventListener('click', function(){
+            const login_url = "http://127.0.0.1:8000/login/";
+            let username = document.getElementById('username').value;
+            let password = document.getElementById('password').value;
+
+            let headers = {
+                'Content-Type': 'application/json',
             }
-            return cookieValue;
+            let body = {
+                'username': username,
+                'password': password
+            }
+            let options = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            };
+            fetch(login_url, options).then(response => {
+                console.log(response.status);
+                return response.json()
+            }).then(data => {
+                localStorage.setItem('access', data.access);
+                localStorage.setItem('refresh', data.refresh);
+            })
+        })
+
+        function refresh_token(){
+            const refresh_url = "http://127.0.0.1:8000/refresh/";
+            let refresh_token = localStorage.getItem('refresh');
+             let headers = {
+                'Content-Type': 'application/json',
+            }
+            let body = {
+                'refresh': refresh_token
+            }
+            let options = {
+                method: 'POST',
+                headers: headers,
+                body: JSON.stringify(body)
+            };
+            fetch(refresh_url, options).then(response => {
+                console.log(response.status);
+                return response.json()
+            }).then(data => {
+                localStorage.setItem('access', data.access);
+            })
         }
-        const csrftoken = getCookie('csrftoken');
 
         let get_data = document.getElementById('get_data');
         let content_block = document.getElementById('content');
 
         get_data.addEventListener('click', function (){
             const url = 'http://127.0.0.1:8000/api/products/';
+            let access = localStorage.getItem('access');
             let headers = {
                 'Content-Type': 'application/json',
+                'Authorization': 'Bearer ' + access
             }
             let options = {
                 method: 'GET',
                 headers: headers
             };
             fetch(url, options)
-                .then(response => response.json())
+                .then(response => {
+                if (response.ok){
+                    result = response.json();
+                    return result;
+                }
+                else{
+                    refresh_token();
+                    access = localStorage.getItem('access');
+                    fetch(url, options)
+                    .then(response => {
+                            result = response.json();
+                            return result;
+                        })
+                }
+                })
                 .then(result => {
+                    console.log(result);
                     for (let i in result){
                         let product_div = document.createElement('div');
                         product_div.id = result[i].id;
@@ -116,5 +170,5 @@
         )
         })
  </script>
-    </body>
+</body>
 </html>
